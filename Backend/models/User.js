@@ -3,6 +3,7 @@ var uniqueValidator = require('mongoose-unique-validator');
 var crypto = require('crypto');
 var secret = require('../config').secret;
 var Schema = mongoose.Schema;
+var jwt = require('jsonwebtoken');
 
 var UserSchema = new Schema({
     username: {type: String, lowercase: true, required:[true, "can't be blank"], unique: true, index: true},
