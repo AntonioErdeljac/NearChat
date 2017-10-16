@@ -1,13 +1,21 @@
 import React from "react";
+import {Link} from "react-router-dom";
 
 class Header extends React.Component{
     render(){
         return(
-            <nav className="navbar navbar-dark bg-primary">
+            <nav className="navbar mb-3 navbar-light bg-light">
                 <div className="container">
-                    <div className="navbar-brand">
+                    <Link to="/" className="navbar-brand">
                         NearChat
-                    </div>
+                    </Link>
+                    <ul className="nav float-right">
+                        <li className="">
+                            <Link to="/login" >
+                                Login
+                            </Link>
+                        </li>
+                    </ul>
                 </div>
             </nav>
         );

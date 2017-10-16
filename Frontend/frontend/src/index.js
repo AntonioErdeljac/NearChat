@@ -2,27 +2,22 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import registerServiceWorker from './registerServiceWorker';
 import App from "./components/App";
+import Chat from "./components/Chat";
+import Login from "./components/Login";
 import {Provider} from "react-redux";
-import {createStore, applyMiddleware, combineReducers} from "redux";
-import {promiseMiddleware} from "./middleware";
+import store from "./store";
+import {BrowserRouter,IndexRoute, Route} from "react-router-dom";
 
-const reducer = (state={profiles: null}, action) => {
-    switch(action.type){
-        case 'CHAT_PAGE_LOADED':
-            console.log(action.payload.profiles);
-            return {
-                ...state,
-                profiles: action.payload.profiles
-            }
-    }
-    return state;
-};
 
-const store = createStore(reducer, applyMiddleware(promiseMiddleware));
 
 ReactDOM.render(
     <Provider store={store}>
-        <App />
+        <BrowserRouter>
+            <App>
+                <Route exact path="/" component={Chat}/>
+                <Route path="/login" component={Login}/>
+            </App>
+        </BrowserRouter>
     </Provider>,
     document.getElementById('root'));
 registerServiceWorker();
