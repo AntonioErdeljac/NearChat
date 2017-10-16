@@ -64,6 +64,9 @@ router.put('/user', auth.required, function(req,res,next){
         if(typeof req.body.user.bio !== 'undefined'){
             user.bio = req.body.user.bio;
         }
+        if(typeof req.body.user.image !== 'undefined'){
+            user.image = req.body.user.image;
+        }
 
         return user.save().then(function(){
             return res.json({user: user.toAuthJSON()})
