@@ -1,10 +1,14 @@
 import React from "react";
 import Header from "./Header";
+import Chat from "./Chat/index";
 
 class App extends React.Component{
     render(){
         return (
-            <Header/>
+            <div>
+                <Header/>
+                <Chat/>
+            </div>
         );
     }
 }
