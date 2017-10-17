@@ -9,6 +9,7 @@ var fs = require('fs'),
     passport = require('passport'),
     errorhandler = require('errorhandler'),
     mongoose = require('mongoose');
+    socket = require('socket.io');
 
 var isProduction = process.env.NODE_ENV === 'production';
 
@@ -41,6 +42,8 @@ if(isProduction){
 require('./models/User');
 require('./config/passport');
 app.use(require('./routes'));
+
+var User = mongoose.model('User');
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -80,3 +83,26 @@ app.use(function(err, req, res, next) {
 var server = app.listen( process.env.PORT || 8000, function(){
   console.log('Listening on port ' + server.address().port);
 });
+
+
+var io = socket(server);
+
+io.on('connection', function(socket){
+  console.log(socket.id);
+
+
+    socket.on('SEND_MESSAGE', function(data){
+      User.findOne({username: data.author}).then(function(user){
+        if(!user){return res.sendStatus(401);}
+
+        var profileUser = user.toProfileJSONFor();
+
+        io.emit('RECEIVE_MESSAGE', {
+          message: data.message,
+            profile: profileUser,
+            author: data.author
+        })
+      });
+    })
+});
+

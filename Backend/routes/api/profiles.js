@@ -30,11 +30,11 @@ router.get('/:username', auth.optional, function(req,res,next){
 router.get('/', function(req,res,next){
     User.find({}).then(function(users){
         return res.json({
-            profiles: users.map(user => {
+            profiles: users.map(function(user ){
                 return user.toProfileJSONFor()
             })
         })
-    })
+    }).catch(next);
 });
 
 
