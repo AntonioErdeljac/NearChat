@@ -28,17 +28,14 @@ class PrivateChat extends React.Component{
             this.props.onAddMessage(message);
         };
 
-        this.socket.on('RECEIVE_MESSAGE', function(data){
+        this.socket.on('RECEIVE_PRIVATE_MESSAGE', function(data){
 
             let typing = document.getElementById('typing');
             typing.innerHTML = '';
-            console.log('RECEIVED MESSAGE');
             addMessage(data);
         });
 
-        this.socket.emit('JOIN_PRIVATE_CHAT', {
-            id: this.socket.id
-        });
+        const currentUser= this.props.currentUser;
 
 
         this.socket.on('RECEIVE_TYPING', function(data){
@@ -49,14 +46,15 @@ class PrivateChat extends React.Component{
 
         this.sendMessage = ev => {
 
-            console.log('SALJEM PORUKU');
             ev.preventDefault();
 
             this.setState({message: ''});
 
-            this.socket.emit('SEND_MESSAGE', {
+            this.socket.emit('SEND_PRIVATE_MESSAGE', {
                 message: this.state.message,
-                author: this.props.currentUser.username
+                author: this.props.currentUser.username,
+                yourRoom: this.props.currentUser.username +'_and_'+this.props.match.params.username,
+                guestRoom: this.props.match.params.username+'_and_'+this.props.currentUser.username
             })
         };
 
@@ -76,7 +74,12 @@ class PrivateChat extends React.Component{
 
 
     render(){
-        if(this.props.profile){
+        if(this.props.profile && this.props.currentUser){
+
+            this.socket.emit('JOIN_PRIVATE_CHAT', {
+                yourRoom: this.props.currentUser.username +'_and_'+this.props.match.params.username,
+                guestRoom: this.props.match.params.username+'_and_'+this.props.currentUser.username
+            });
             return (
                 <div className="container my-3">
                     <div className="row">
@@ -119,12 +122,12 @@ const mapDispatchToProps = dispatch => ({
     onUnload: () =>
         dispatch({type: 'CHAT_PAGE_UNLOADED'}),
     onAddMessage: message =>
-        dispatch({type: 'ADD_MESSAGE', message})
+        dispatch({type: 'ADD_PRIVATE_MESSAGE', message})
 });
 
 const mapStateToProps = state => ({
     currentUser: state.common.currentUser,
-    messages: state.chat.messages,
+    messages: state.chat.privateMessages,
     profile: state.chat.profile
 });
 

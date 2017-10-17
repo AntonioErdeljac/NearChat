@@ -148,6 +148,26 @@ io.on('connection', function(socket){
       });
     });
 
+    socket.on('JOIN_PRIVATE_CHAT', function(data){
+      console.log('JOINED PRIVATE CHAT', data.yourRoom);
+      socket.join(data.yourRoom);
+    });
+
+    socket.on('SEND_PRIVATE_MESSAGE', function(data){
+      User.findOne({username: data.author}).then(function(user){
+          const profileUser = user.toProfileJSONFor();
+          io.in(data.yourRoom).emit('RECEIVE_PRIVATE_MESSAGE', {
+              author: profileUser,
+              message: data.message
+          });
+          io.in(data.guestRoom).emit('RECEIVE_PRIVATE_MESSAGE', {
+              author: profileUser,
+              message: data.message
+          })
+      })
+
+    });
+
     socket.on('disconnect', function(){
       socket.disconnect();
     })

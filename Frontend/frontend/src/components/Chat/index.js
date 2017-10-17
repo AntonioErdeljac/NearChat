@@ -56,8 +56,6 @@ class Chat extends React.Component{
             console.log('SALJEM PORUKU');
             ev.preventDefault();
 
-            this.setState({message: ''});
-
             this.socket.emit('SEND_MESSAGE', {
                 message: this.state.message,
                 author: this.props.currentUser.username

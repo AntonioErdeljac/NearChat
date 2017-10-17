@@ -14,6 +14,11 @@ export default (state={}, action) => {
             return {
                 ...state,
                 profile: action.payload.profile
+            };
+        case 'ADD_PRIVATE_MESSAGE':
+            return {
+                ...state,
+                privateMessages: (state.privateMessages || []).concat([action.message])
             }
     }
     return state;
