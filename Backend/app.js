@@ -121,6 +121,17 @@ io.on('connection', function(socket){
       });
     });
 
+    socket.on('SEND_TYPING', function(data){
+      User.findOne({username: data.author}).then(function(user){
+        if(!user){return res.sendStatus(401);}
+        var profileUser = user.toProfileJSONFor();
+
+        socket.broadcast.to('global').emit('RECEIVE_TYPING', {
+          author: profileUser
+        });
+      })
+    });
+
     socket.on('JOIN_GLOBAL_CHAT', function(data){
       GlobalChat.findOne({name: 'global'})
           .populate('messages')

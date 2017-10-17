@@ -33,6 +33,9 @@ class Chat extends React.Component{
         });
 
         this.socket.on('RECEIVE_MESSAGE', function(data){
+
+            let typing = document.getElementById('typing');
+            typing.innerHTML = '';
             console.log('RECEIVED MESSAGE');
             addMessage(data);
         });
@@ -42,15 +45,30 @@ class Chat extends React.Component{
         });
 
 
+        this.socket.on('RECEIVE_TYPING', function(data){
+            let typing = document.getElementById('typing');
+            typing.innerHTML = `<p class="text-muted"><b>${data.author.username}</b> is typing...</p>`
+        });
+
 
         this.sendMessage = ev => {
+
             console.log('SALJEM PORUKU');
             ev.preventDefault();
+
+            this.setState({message: ''});
 
             this.socket.emit('SEND_MESSAGE', {
                 message: this.state.message,
                 author: this.props.currentUser.username
             })
+        };
+
+
+        this.isTyping = ev => {
+            this.socket.emit('SEND_TYPING', {
+                author: this.props.currentUser.username
+            });
         }
     }
 
@@ -79,11 +97,13 @@ class Chat extends React.Component{
                                             )
                                         })
                                     }
+                                    <div id="typing"></div>
                                 </div>
                                 <div className="card-footer">
                                     <input
                                         onChange={this.setMessage}
                                         value={this.state.message}
+                                        onKeyPress={this.isTyping}
                                         placeholder="Enter a message" type="text" className="form-control"/>
                                     <button onClick={this.sendMessage} className="my-2 btn btn-primary form-control">Send</button>
                                 </div>
