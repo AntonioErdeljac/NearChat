@@ -16,7 +16,9 @@ const requests = {
 
 const Profiles = {
     all: () =>
-        requests.get(`/profiles`)
+        requests.get(`/profiles`),
+    get: username =>
+        requests.get(`/profiles/${username}`)
 };
 
 const Auth = {

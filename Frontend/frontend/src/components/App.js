@@ -1,7 +1,7 @@
 import React from "react";
 import Header from "./Header";
-import Chat from "./Chat/index";
 import Home from "./Home";
+import PrivateChat from "./PrivateChat";
 import Login from "./Login";
 import Register from "./Register";
 import Settings from "./Settings";
@@ -33,13 +33,11 @@ class App extends React.Component{
             <div>
                 <Header currentUser={this.props.currentUser}/>
                 <Switch>
-                    <Route exact path='/login' component={Login}/>
-                    <Route exact path='/register' component={Register}/>
-                    <Route exact path='/settings' component={Settings}/>
-                    <Route path='/' component={Home}/>
-                    <Route path='/chat/:username' render={(props) => (
-                        <Home {...props}/>
-                    )} />
+                    <Route path='/login' component={Login}/>
+                    <Route path='/register' component={Register}/>
+                    <Route path='/settings' component={Settings}/>
+                    <Route path='/chat/:username' component={PrivateChat}/>
+                    <Route exact path='/' component={Home}/>
                 </Switch>
             </div>
         );
