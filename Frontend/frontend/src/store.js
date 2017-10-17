@@ -1,18 +1,14 @@
 import {createStore, applyMiddleware, combineReducers} from "redux";
-import {promiseMiddleware} from "./middleware";
+import {promiseMiddleware, localStorageMiddleware} from "./middleware";
 
-const reducer = (state={profiles: null}, action) => {
-    switch(action.type){
-        case 'CHAT_PAGE_LOADED':
-            console.log(action.payload.profiles);
-            return {
-                ...state,
-                profiles: action.payload.profiles
-            }
-    }
-    return state;
-};
+import common from "./reducers/common";
+import auth from "./reducers/auth";
 
-const store = createStore(reducer, applyMiddleware(promiseMiddleware));
+const reducer = combineReducers({
+    common,
+    auth
+});
+
+const store = createStore(reducer, applyMiddleware(promiseMiddleware, localStorageMiddleware));
 
 export default store;

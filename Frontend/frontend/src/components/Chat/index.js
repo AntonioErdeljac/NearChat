@@ -46,7 +46,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const mapStateToProps = state => ({
-    profiles: state.profiles
+    profiles: state.common.profiles
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Chat);

@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "prop-types": "^15.6.0",
     "react": "^16.0.0",
     "react-redux": "^5.0.6",
     "react-router": "^4.2.0",
