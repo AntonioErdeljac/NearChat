@@ -3,6 +3,8 @@ import Header from "./Header";
 import Chat from "./Chat/index";
 import Home from "./Home";
 import Login from "./Login";
+import Register from "./Register";
+import Settings from "./Settings";
 import {connect} from "react-redux";
 import agent from "../agent";
 import {Switch, Route, withRouter, Redirect} from "react-router-dom";
@@ -34,6 +36,8 @@ class App extends React.Component{
                 <Header currentUser={this.props.currentUser}/>
                 <Switch>
                     <Route exact path='/login' component={Login}/>
+                    <Route exact path='/register' component={Register}/>
+                    <Route exact path='/settings' component={Settings}/>
                     <Route path='/' component={Home}/>
                 </Switch>
             </div>

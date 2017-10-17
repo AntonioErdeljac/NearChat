@@ -43,7 +43,7 @@ UserSchema.methods.toAuthJSON = function(){
         username: this.username,
         email: this.email,
         bio: this.bio,
-        image: this.image,
+        image: this.image || "http://www.stickpng.com/assets/images/585e4bcdcb11b227491c3396.png",
         token: this.generateJWT()
     };
 };

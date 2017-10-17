@@ -10,17 +10,30 @@ const LoggedOutView = props => {
                     Login
                 </Link>
             </li>
+            <li className="mx-3">
+                <Link to="/register" >
+                    Register
+                </Link>
+            </li>
         </ul>
     );
     }
     return null;
-}
+};
+
+
 const LoggedInView = props => {
     if(props.currentUser){
     return (
         <ul className="nav float-right">
+            <li className="mx-3">
+                <Link to="/settings" >
+                    Settings
+                </Link>
+            </li>
             <li className="">
-                <Link to="/login" >
+                <Link to={`@${props.currentUser.username}`} >
+                    <img src={props.currentUser.image} className="rounded-circle mx-1" height="20" alt=""/>
                     {props.currentUser.username}
                 </Link>
             </li>

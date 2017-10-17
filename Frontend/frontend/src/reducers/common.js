@@ -8,11 +8,19 @@ export default (state={profiles: null}, action) => {
                 appLoaded: true
             };
         case 'LOGIN':
+        case 'REGISTER':
             return {
                 ...state,
                 currentUser: action.error ? null : action.payload.user,
                 token: action.error ? null : action.payload.user.token,
                 redirectTo: action.error ? null : '/'
+            };
+        case 'LOGOUT':
+            return {
+                ...state,
+                currentUser: null,
+                token: null,
+                redirectTo: '/'
             };
         case 'REDIRECT':
             return {

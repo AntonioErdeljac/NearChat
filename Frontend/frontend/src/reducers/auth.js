@@ -7,6 +7,7 @@ export default (state={}, action) => {
                 [action.key]: action.value
             };
         case 'LOGIN':
+        case 'REGISTER':
             console.log(action.error);
             return {
                 ...state,
