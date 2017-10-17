@@ -9,22 +9,39 @@ class Chat extends React.Component{
     constructor(props){
         super(props);
 
+        this.setMessage = ev => this.setState({message: ev.target.value});
+
+        this.state = {
+            message: ''
+        };
+
+
+    }
+    componentWillMount(){
+        this.props.onLoad(Promise.all([agent.Profiles.all(), agent.GlobalChat.all()]))
+    }
+
+    componentDidMount(){
         this.socket = io('localhost:8000');
 
         const addMessage = message => {
             this.props.onAddMessage(message);
         };
 
+        this.socket.on('JOINED_GLOBAL_CHAT', function(data){
+            console.log(data, 'JOINED GLOBAL CHAT')
+        });
+
         this.socket.on('RECEIVE_MESSAGE', function(data){
             console.log('RECEIVED MESSAGE');
             addMessage(data);
         });
 
-        this.state = {
-            message: ''
-        };
+        this.socket.emit('JOIN_GLOBAL_CHAT', {
+            id: this.socket.id
+        });
 
-        this.setMessage = ev => this.setState({message: ev.target.value});
+
 
         this.sendMessage = ev => {
             console.log('SALJEM PORUKU');
@@ -36,9 +53,6 @@ class Chat extends React.Component{
             })
         }
     }
-    componentWillMount(){
-        this.props.onLoad(agent.Profiles.all())
-    }
 
     componentWillUnmount(){
         this.socket.disconnect();
@@ -48,61 +62,19 @@ class Chat extends React.Component{
 
 
     render(){
-        if(this.props.currentUser && this.props.profile){
+        if(this.props.currentUser){
             return (
                 <div className="container my-3">
                     <div className="row">
                         <div className="col-md-8 col-xs-12">
                             <div className="card">
                                 <div className="card-title">{this.props.profile}</div>
-                                <div className="card-body" id="messages">
+                                <div className="card-body" id="messages"  style={{overflow: 'scroll', height: '400px', overflowX: 'hidden'}}>
                                     {
-                                        this.props.messages.map(message => {
+                                        (this.props.messages || []).map((message, key) => {
                                             return (
-                                                <div>
-                                                    <p><img src={message.profile.image} height="20" className="rounded-circle" alt="" /><b>{message.author}</b>: {message.message}</p>
-                                                </div>
-                                            )
-                                        })
-                                    }
-                                </div>
-                                <div className="card-footer">
-                                    <input
-                                        onChange={this.setMessage}
-                                        value={this.state.message}
-                                        placeholder="Enter a message" type="text" className="form-control"/>
-                                    <button onClick={this.sendMessage} className="my-2 btn btn-primary form-control">Send</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-md-4 col-xs-12">
-                            <div className="card">
-                                <div className="card-body">
-                                    <div className="card-title">
-                                        All Users
-                                    </div>
-                                </div>
-                                <div className="card-footer">
-                                    <Profiles profiles={this.props.profiles}/>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
-        } else if(this.props.currentUser) {
-            console.log(this.props);
-            return (
-                <div className="container my-3">
-                    <div className="row">
-                        <div className="col-md-8 col-xs-12">
-                            <div className="card">
-                                <div className="card-body" id="messages">
-                                    {
-                                        (this.props.messages || []).map(message => {
-                                            return (
-                                                <div>
-                                                    <p><img src={message.profile.image} height="20" className="rounded-circle" alt="" /><b>{message.author}</b>: {message.message}</p>
+                                                <div key={key}>
+                                                    <p><img src={message.author.image} height="20" className="rounded-circle" alt="" /><b>{message.author.username}</b>: {message.message}</p>
                                                 </div>
                                             )
                                         })
@@ -142,7 +114,7 @@ class Chat extends React.Component{
 
                                 </div>
                                 <div className="card-footer">
-                                    <p>Login or Sign Up to leave a message.</p>
+                                    <p><Link to="/login">Login</Link> or <Link to="/register">Sign Up</Link> to leave a message.</p>
                                 </div>
                             </div>
                         </div>

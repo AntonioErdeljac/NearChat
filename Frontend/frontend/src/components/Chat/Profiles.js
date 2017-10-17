@@ -17,7 +17,7 @@ const Profiles = props => {
             {
                 props.profiles.map(profile => {
                     return (
-                        <Link to={`/chat/${profile.username}`}>
+                        <Link key={profile.username} to={`/chat/${profile.username}`}>
                             <div className="card">
                                 <div className="card-body">
                                     <div className="card-title">

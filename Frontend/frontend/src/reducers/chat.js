@@ -5,6 +5,11 @@ export default (state={}, action) => {
                 ...state,
                 messages: (state.messages || []).concat([action.message])
             };
+        case 'CHAT_PAGE_LOADED':
+            return {
+                ...state,
+                messages: action.payload[1].messages
+            }
     }
     return state;
 }

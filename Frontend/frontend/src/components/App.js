@@ -12,19 +12,10 @@ import {Switch, Route, withRouter, Redirect} from "react-router-dom";
 
 class App extends React.Component{
 
-    constructor(props){
-        super(props);
-
-        this.socket = io ('localhost:8000');
-    }
-
     componentWillReceiveProps(nextProps){
         if(nextProps.redirectTo){
-
-                this.props.history.push(nextProps.redirectTo);
-                this.props.onRedirect();
-
-
+            this.props.history.push(nextProps.redirectTo);
+            this.props.onRedirect();
         }
     }
 
@@ -38,7 +29,6 @@ class App extends React.Component{
     }
 
     render(){
-        console.log(this.props.match, 'APP COMPONENT');
         return (
             <div>
                 <Header currentUser={this.props.currentUser}/>

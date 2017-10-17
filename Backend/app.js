@@ -40,10 +40,14 @@ if(isProduction){
 }
 
 require('./models/User');
+require('./models/GlobalChat');
+require('./models/GlobalMessage');
 require('./config/passport');
 app.use(require('./routes'));
 
 var User = mongoose.model('User');
+var GlobalMessage = mongoose.model('GlobalMessage');
+var GlobalChat = mongoose.model('GlobalChat');
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -85,6 +89,8 @@ var server = app.listen( process.env.PORT || 8000, function(){
 });
 
 
+
+
 var io = socket(server);
 
 io.on('connection', function(socket){
@@ -96,13 +102,38 @@ io.on('connection', function(socket){
       User.findOne({username: data.author}).then(function(user){
         if(!user){return res.sendStatus(401);}
 
+        var message = new GlobalMessage();
+        message.author = user;
+        message.message = data.message;
+        message.save();
+
+        GlobalChat.findOne({name: 'global'}).then(function(chat){
+          chat.messages.push(message);
+          chat.save();
+        });
+
         var profileUser = user.toProfileJSONFor();
 
-        io.emit('RECEIVE_MESSAGE', {
+        io.in('global').emit('RECEIVE_MESSAGE', {
           message: data.message,
-            profile: profileUser,
-            author: data.author
+            author: profileUser
         })
+      });
+    });
+
+    socket.on('JOIN_GLOBAL_CHAT', function(data){
+      GlobalChat.findOne({name: 'global'})
+          .populate('messages')
+          .populate({
+              path: 'messages',
+              populate: {
+                path: 'author'
+              }
+          }).then(function(chat){
+          socket.join('global');
+          io.emit('JOINED_GLOBAL', {
+              messages: chat.messages
+          });
       });
     });
 

@@ -28,6 +28,11 @@ const Auth = {
         requests.get(`/user`)
 };
 
+const GlobalChat = {
+    all: () =>
+        requests.get(`/globalchat`)
+};
+
 let token = null;
 
 let tokenPlugin = req => {
@@ -39,5 +44,6 @@ let tokenPlugin = req => {
 export default {
     Profiles,
     Auth,
+    GlobalChat,
     setToken: _token => {token = _token}
 };
