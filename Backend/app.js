@@ -92,6 +92,7 @@ io.on('connection', function(socket){
 
 
     socket.on('SEND_MESSAGE', function(data){
+      console.log('server je primio poruku');
       User.findOne({username: data.author}).then(function(user){
         if(!user){return res.sendStatus(401);}
 
@@ -103,6 +104,10 @@ io.on('connection', function(socket){
             author: data.author
         })
       });
+    });
+
+    socket.on('disconnect', function(){
+      socket.disconnect();
     })
 });
 

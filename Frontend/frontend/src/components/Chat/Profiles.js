@@ -1,4 +1,5 @@
 import React from "react";
+import {Link} from "react-router-dom";
 
 const Profiles = props => {
     if(!props.profiles){
@@ -16,13 +17,15 @@ const Profiles = props => {
             {
                 props.profiles.map(profile => {
                     return (
-                        <div className="card">
-                            <div className="card-body">
-                                <div className="card-title">
-                                    <img src={profile.image} height="30" className="rounded-circle" alt=""/> <b>{profile.username}</b>
+                        <Link to={`/chat/${profile.username}`}>
+                            <div className="card">
+                                <div className="card-body">
+                                    <div className="card-title">
+                                        <img src={profile.image} height="30" className="rounded-circle" alt=""/> <b>{profile.username}</b>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </Link>
                     )
                 })
             }

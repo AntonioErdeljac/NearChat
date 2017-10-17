@@ -22,7 +22,7 @@ router.get('/:username', auth.optional, function(req,res,next){
             return res.json({profile: req.profile.toProfileJSONFor(user)});
         }).catch(next);
     } else {
-        return res.json({profile: req.profile.toProfileJSONFor(false)});
+        return res.json({profile:   req.profile.toProfileJSONFor(false)});
     }
 });
 

@@ -3,10 +3,12 @@ import {promiseMiddleware, localStorageMiddleware} from "./middleware";
 
 import common from "./reducers/common";
 import auth from "./reducers/auth";
+import chat from "./reducers/chat";
 
 const reducer = combineReducers({
     common,
-    auth
+    auth,
+    chat
 });
 
 const store = createStore(reducer, applyMiddleware(promiseMiddleware, localStorageMiddleware));

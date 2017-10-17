@@ -7,9 +7,16 @@ import Register from "./Register";
 import Settings from "./Settings";
 import {connect} from "react-redux";
 import agent from "../agent";
+import io from "socket.io-client";
 import {Switch, Route, withRouter, Redirect} from "react-router-dom";
 
 class App extends React.Component{
+
+    constructor(props){
+        super(props);
+
+        this.socket = io ('localhost:8000');
+    }
 
     componentWillReceiveProps(nextProps){
         if(nextProps.redirectTo){
@@ -31,6 +38,7 @@ class App extends React.Component{
     }
 
     render(){
+        console.log(this.props.match, 'APP COMPONENT');
         return (
             <div>
                 <Header currentUser={this.props.currentUser}/>
@@ -39,6 +47,9 @@ class App extends React.Component{
                     <Route exact path='/register' component={Register}/>
                     <Route exact path='/settings' component={Settings}/>
                     <Route path='/' component={Home}/>
+                    <Route path='/chat/:username' render={(props) => (
+                        <Home {...props}/>
+                    )} />
                 </Switch>
             </div>
         );
