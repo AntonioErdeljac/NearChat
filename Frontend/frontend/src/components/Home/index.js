@@ -15,10 +15,5 @@ class Home extends React.Component{
     }
 }
 
-const mapDispatchToProps = dispatch => ({
-    onLoadMessages: messages =>
-        dispatch({type: 'LOAD_MESSAGES', messages})
-});
 
-
-export default connect(null, mapDispatchToProps)(Home);
+export default Home;

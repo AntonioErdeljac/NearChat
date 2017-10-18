@@ -11,7 +11,8 @@ var UserSchema = new Schema({
     bio: String,
     image: String,
     hash: String,
-    salt: String
+    salt: String,
+    chatRooms: [{type: mongoose.Schema.Types.ObjectId, ref:'PrivateChat'}]
 }, {timestamps: true});
 
 UserSchema.plugin(uniqueValidator, {message: "is already taken."});
@@ -44,6 +45,9 @@ UserSchema.methods.toAuthJSON = function(){
         email: this.email,
         bio: this.bio,
         image: this.image || "http://www.stickpng.com/assets/images/585e4bcdcb11b227491c3396.png",
+        chatRooms: this.chatRooms.map(function(chat){
+            return chat.forUser();
+        }),
         token: this.generateJWT()
     };
 };

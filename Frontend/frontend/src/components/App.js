@@ -36,7 +36,9 @@ class App extends React.Component{
                     <Route path='/login' component={Login}/>
                     <Route path='/register' component={Register}/>
                     <Route path='/settings' component={Settings}/>
-                    <Route path='/chat/:username' component={PrivateChat}/>
+                    <Route path='/chat/:username' render={(props) => (
+                        <PrivateChat {...props} currentUser={this.props.currentUser}/>
+                    )}/>
                     <Route exact path='/' component={Home}/>
                 </Switch>
             </div>

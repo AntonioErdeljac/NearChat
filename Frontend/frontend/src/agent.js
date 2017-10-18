@@ -21,6 +21,11 @@ const Profiles = {
         requests.get(`/profiles/${username}`)
 };
 
+const PrivateChat = {
+    get: roomName =>
+        requests.get(`/privatechat/${roomName}`)
+};
+
 const Auth = {
     login: (email, password) =>
         requests.post(`/users/login`, {user: {email, password}}),
@@ -47,5 +52,6 @@ export default {
     Profiles,
     Auth,
     GlobalChat,
+    PrivateChat,
     setToken: _token => {token = _token}
 };

@@ -42,12 +42,16 @@ if(isProduction){
 require('./models/User');
 require('./models/GlobalChat');
 require('./models/GlobalMessage');
+require('./models/PrivateChat');
+require('./models/PrivateMessage');
 require('./config/passport');
 app.use(require('./routes'));
 
 var User = mongoose.model('User');
 var GlobalMessage = mongoose.model('GlobalMessage');
 var GlobalChat = mongoose.model('GlobalChat');
+var PrivateChat = mongoose.model('PrivateChat');
+var PrivateMessage = mongoose.model('PrivateMessage');
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -154,8 +158,84 @@ io.on('connection', function(socket){
     });
 
     socket.on('SEND_PRIVATE_MESSAGE', function(data){
+        console.log('SENDED PRIVATEM ESSAGE TO SEERverS', data);
       User.findOne({username: data.author}).then(function(user){
+          User.findOne({username: data.receiver}).then(function(receiver){
+              PrivateChat.findOne({roomName: data.yourRoom}).then(function(chat){
+                    if(!chat) {
+                        var newChat = new PrivateChat();
+                        newChat.roomName = data.yourRoom;
+                        newChat.users.push(receiver);
+                        newChat.users.push(user);
+                        newChat.save();
+
+                        var message = new PrivateMessage();
+                        message.author = user;
+                        message.receiver = receiver;
+                        message.message = data.message;
+                        message.save();
+
+                        newChat.messages.push(message);
+                        newChat.save();
+
+
+                        PrivateChat.findOne({roomName: data.guestRoom}).then(function(chat){
+                            if(!chat) {
+                                var newChat = new PrivateChat();
+                                newChat.roomName = data.guestRoom;
+                                newChat.users.push(receiver);
+                                newChat.users.push(user);
+                                newChat.save();
+
+                                var message = new PrivateMessage();
+                                message.author = user;
+                                message.receiver = receiver;
+                                message.message = data.message;
+                                message.save();
+
+                                newChat.messages.push(message);
+                                newChat.save();
+                            } else {
+                                var message = new PrivateMessage();
+                                message.author = user;
+                                message.receiver = receiver;
+                                message.message = data.message;
+                                message.save();
+
+                                chat.messages.push(message);
+                                return chat.save();
+                            }
+                        });
+                    } else {
+                        var message = new PrivateMessage();
+                        message.author = user;
+                        message.receiver = receiver;
+                        message.message = data.message;
+                        message.save();
+
+                        chat.messages.push(message);
+                        chat.save();
+
+                        PrivateChat.findOne({roomName: data.guestRoom}).then(function(chat){
+                                var message = new PrivateMessage();
+                                message.author = user;
+                                message.receiver = receiver;
+                                message.message = data.message;
+                                message.save();
+
+                                chat.messages.push(message);
+                                return chat.save();
+
+                        });
+                    }
+              });
+          });
+
+
+
+
           const profileUser = user.toProfileJSONFor();
+          console.log(profileUser, 'IM HERE')
           io.in(data.yourRoom).emit('RECEIVE_PRIVATE_MESSAGE', {
               author: profileUser,
               message: data.message

@@ -28,6 +28,7 @@ export default (state={profiles: null}, action) => {
                 redirectTo: null
             };
         case 'CHAT_PAGE_LOADED':
+            console.log(action.payload[0].profiles, 'LOADING PROFILEs');
             return {
                 ...state,
                 profiles: action.payload[0].profiles

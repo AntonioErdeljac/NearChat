@@ -18,6 +18,7 @@ class Chat extends React.Component{
 
     }
     componentWillMount(){
+        console.log('Component mounted, calling profiles');
         this.props.onLoad(Promise.all([agent.Profiles.all(), agent.GlobalChat.all()]))
     }
 

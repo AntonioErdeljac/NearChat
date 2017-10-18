@@ -18,7 +18,9 @@ class PrivateChat extends React.Component{
 
     }
     componentWillMount(){
-        this.props.onLoad(agent.Profiles.get(this.props.match.params.username))
+        console.log(this.props.currentUser, ' CURRENTUSER');
+        this.props.onLoad(agent.Profiles.get(this.props.match.params.username));
+        this.props.onLoadMessages();
     }
 
     componentDidMount(){
@@ -29,13 +31,11 @@ class PrivateChat extends React.Component{
         };
 
         this.socket.on('RECEIVE_PRIVATE_MESSAGE', function(data){
-
+            console.log('DOBIO SAM PORUKU', data);
             let typing = document.getElementById('typing');
             typing.innerHTML = '';
             addMessage(data);
         });
-
-        const currentUser= this.props.currentUser;
 
 
         this.socket.on('RECEIVE_TYPING', function(data){
@@ -53,6 +53,7 @@ class PrivateChat extends React.Component{
             this.socket.emit('SEND_PRIVATE_MESSAGE', {
                 message: this.state.message,
                 author: this.props.currentUser.username,
+                receiver: this.props.match.params.username,
                 yourRoom: this.props.currentUser.username +'_and_'+this.props.match.params.username,
                 guestRoom: this.props.match.params.username+'_and_'+this.props.currentUser.username
             })
@@ -72,14 +73,17 @@ class PrivateChat extends React.Component{
         this.props.onUnload()
     }
 
-
     render(){
         if(this.props.profile && this.props.currentUser){
+            console.log(this.props.chatLoaded, 'IS CHAT LOADED?');
+            if(!this.props.chatLoaded){
+                this.socket.emit('JOIN_PRIVATE_CHAT', {
+                    yourRoom: this.props.currentUser.username +'_and_'+this.props.match.params.username,
+                    guestRoom: this.props.match.params.username+'_and_'+this.props.currentUser.username
+                });
+                this.props.onLoadMessages(agent.PrivateChat.get(this.props.currentUser.username+'_and_'+this.props.match.params.username));
 
-            this.socket.emit('JOIN_PRIVATE_CHAT', {
-                yourRoom: this.props.currentUser.username +'_and_'+this.props.match.params.username,
-                guestRoom: this.props.match.params.username+'_and_'+this.props.currentUser.username
-            });
+            }
             return (
                 <div className="container my-3">
                     <div className="row">
@@ -119,6 +123,8 @@ class PrivateChat extends React.Component{
 const mapDispatchToProps = dispatch => ({
     onLoad: payload =>
         dispatch({type: 'PRIVATE_CHAT_PAGE_LOADED', payload}),
+    onLoadMessages: payload =>
+        dispatch({type: 'PRIVATE_CHAT_MESSAGES_LOADED', payload}),
     onUnload: () =>
         dispatch({type: 'CHAT_PAGE_UNLOADED'}),
     onAddMessage: message =>
@@ -128,7 +134,8 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = state => ({
     currentUser: state.common.currentUser,
     messages: state.chat.privateMessages,
-    profile: state.chat.profile
+    profile: state.chat.profile,
+    chatLoaded: state.chat.chatLoaded
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PrivateChat);
