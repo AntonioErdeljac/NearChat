@@ -16,7 +16,21 @@ const Profiles = props => {
         <div>
             {
                 props.profiles.map(profile => {
-                    if(profile.username !== props.currentUser.username){
+                    if(props.currentUser){
+                        if(profile.username !== props.currentUser.username){
+                            return (
+                                <Link key={profile.username} to={`/chat/${profile.username}`}>
+                                    <div className="card">
+                                        <div className="card-body">
+                                            <div className="card-title">
+                                                <img src={profile.image} height="30" className="rounded-circle" alt=""/> <b>{profile.username}</b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Link>
+                            )
+                        }
+                    } else {
                         return (
                             <Link key={profile.username} to={`/chat/${profile.username}`}>
                                 <div className="card">
