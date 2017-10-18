@@ -9,7 +9,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-You are going to need [Node.js], [npm] and [MongoDB] installed on your machine.
+You are going to need **Node.js**, **npm** and **MongoDB** installed on your machine.
 
 ```
 curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
@@ -57,7 +57,7 @@ You will need to run Backend & Frontend seperately, ports are already configured
 
 ## Authors
 
-* **Antonio Erdeljac** - *Initial work* - [PurpleBooth](https://github.com/AntonioErdeljac)
+* **Antonio Erdeljac** - *Initial work* - [NearChat](https://github.com/AntonioErdeljac)
 
 See also the list of [contributors](https://github.com/AntonioErdeljac/NearChat/graphs/contributors) who participated in this project.
 
