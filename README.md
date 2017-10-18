@@ -47,6 +47,17 @@ cd NearChat/Frontend/frontend && npm install --save
 
 You will need to run Backend & Frontend seperately, ports are already configured, make sure you don't conflict them if you change anything.
 
+Enter Frontend directory and do npm start
+
+```
+cd NearChat/Frontend/frontend && npm start
+```
+Enter Backend directory and do npm run dev
+
+```
+cd NearChat/Backend && npm run dev
+```
+
 ## Built With
 
 * [React](https://reactjs.org/) - Frontend javascript library 
