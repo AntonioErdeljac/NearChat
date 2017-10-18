@@ -116,7 +116,7 @@ class Chat extends React.Component{
                                     </div>
                                 </div>
                                 <div className="card-footer">
-                                    <Profiles profiles={this.props.profiles}/>
+                                    <Profiles currentUser={this.props.currentUser} profiles={this.props.profiles}/>
                                 </div>
                             </div>
                         </div>
@@ -145,7 +145,7 @@ class Chat extends React.Component{
                                     </div>
                                 </div>
                                 <div className="card-footer">
-                                    <Profiles profiles={this.props.profiles}/>
+                                    <Profiles currentUser={this.props.currentUser} profiles={this.props.profiles}/>
                                 </div>
                             </div>
                         </div>
