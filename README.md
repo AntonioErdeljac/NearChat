@@ -58,6 +58,8 @@ Enter Backend directory and do npm run dev
 cd NearChat/Backend && npm run dev
 ```
 
+Now you can load localhost:3000 in your browser and use the app.
+
 ## Built With
 
 * [React](https://reactjs.org/) - Frontend javascript library 
