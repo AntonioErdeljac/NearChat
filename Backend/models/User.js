@@ -5,6 +5,14 @@ var secret = require('../config').secret;
 var Schema = mongoose.Schema;
 var jwt = require('jsonwebtoken');
 
+var GeoSchema = new Schema({
+    coordinates: {type: [Number], index: "2dsphere"},
+    type: {
+        type: String,
+        default: 'Point'
+    }
+});
+
 var UserSchema = new Schema({
     username: {type: String, lowercase: true, required:[true, "can't be blank"], unique: true, index: true},
     email: {type: String, lowercase: true, required: [true, "can't be blank"], unique: true, index: true},
@@ -12,7 +20,8 @@ var UserSchema = new Schema({
     image: String,
     hash: String,
     salt: String,
-    chatRooms: [{type: mongoose.Schema.Types.ObjectId, ref:'PrivateChat'}]
+    chatRooms: [{type: mongoose.Schema.Types.ObjectId, ref:'PrivateChat'}],
+    geometry: GeoSchema
 }, {timestamps: true});
 
 UserSchema.plugin(uniqueValidator, {message: "is already taken."});
