@@ -9,7 +9,7 @@ var GeoSchema = new Schema({
     coordinates: {type: [Number], index: "2dsphere"},
     type: {
         type: String,
-        default: 'Point'
+        default: "<GeoJSON type>"
     }
 });
 
@@ -57,7 +57,8 @@ UserSchema.methods.toAuthJSON = function(){
         chatRooms: this.chatRooms.map(function(chat){
             return chat.forUser();
         }),
-        token: this.generateJWT()
+        token: this.generateJWT(),
+        geometry: this.geometry
     };
 };
 
@@ -66,7 +67,8 @@ UserSchema.methods.toProfileJSONFor = function(user){
         username: this.username,
         bio: this.bio,
         image: this.image || "http://www.stickpng.com/assets/images/585e4bcdcb11b227491c3396.png",
-        friends: false
+        friends: false,
+        geometry: this.geometry
     };
 };
 

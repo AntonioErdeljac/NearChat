@@ -248,6 +248,49 @@ io.on('connection', function(socket){
 
     });
 
+    socket.on('JOIN_USER_ROOM', function(data){
+        socket.join(data.user);
+    });
+
+    socket.on('LOCATION_UPDATE', function(data) {
+        User.findOne({username: data.user}).then(function (user) {
+            if (!user) {
+                return res.sendStatus(401);
+            }
+
+            user.geometry = {
+                type: "<GeoJSON type>",
+                coordinates: [
+                    data.lat,
+                    data.lng
+                ]
+            };
+            return user.save().then(function () {
+                io.emit('RECEIVE_LOCATION_UPDATE');
+            })
+
+        });
+
+    });
+    socket.on('RECEIVED_LOCATION_UPDATE_ALL', function(data){
+        User.findOne({username: data.user}).then(function(user){
+            User.geoNear(
+                {type: "<GeoJSON type>", coordinates:[user.geometry.coordinates[0], user.geometry.coordinates[1]]},
+                {maxDistance: 1000, spherical: true}
+            ).then(function(users){
+                const profiles = {
+                    profiles: users.map(function(user){
+                        return {profile: user.obj.toProfileJSONFor(), distance: user.dis}
+                    })
+                };
+
+                io.in(data.user).emit('RECEIVE_NEW_USERS', {
+                    profiles: profiles
+                });
+            })
+        })
+    });
+
     socket.on('disconnect', function(){
       socket.disconnect();
     })

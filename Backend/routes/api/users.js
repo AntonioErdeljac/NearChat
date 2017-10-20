@@ -67,6 +67,9 @@ router.put('/user', auth.required, function(req,res,next){
         if(typeof req.body.user.image !== 'undefined'){
             user.image = req.body.user.image;
         }
+        if(typeof req.body.user.geometry !== 'undefined'){
+            user.geometry = req.body.user.geometry
+        }
 
         return user.save().then(function(){
             return res.json({user: user.toAuthJSON()})

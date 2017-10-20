@@ -11,14 +11,23 @@ const requests = {
     get: url =>
         superagent.get(`${API_ROOT}${url}`).use(tokenPlugin).then(responseBody),
     post: (url, body) =>
-        superagent.post(`${API_ROOT}${url}`, body).use(tokenPlugin).then(responseBody)
+        superagent.post(`${API_ROOT}${url}`, body).use(tokenPlugin).then(responseBody),
+    put: (url, body) =>
+        superagent.put(`${API_ROOT}${url}`, body).use(tokenPlugin).then(responseBody)
 };
 
 const Profiles = {
-    all: () =>
-        requests.get(`/profiles`),
+    all: (lat, lng) =>
+        requests.get(`/profiles?lat=${lat}&lng=${lng}`),
+    near: (lat, lng) =>
+        requests.get(`/profiles/near?lat=${lat}&lng=${lng}`),
     get: username =>
         requests.get(`/profiles/${username}`)
+};
+
+const User = {
+    update: user =>
+        requests.put(`/user`, {user})
 };
 
 const PrivateChat = {
@@ -53,5 +62,6 @@ export default {
     Auth,
     GlobalChat,
     PrivateChat,
+    User,
     setToken: _token => {token = _token}
 };

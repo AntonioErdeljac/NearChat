@@ -17,13 +17,16 @@ const Profiles = props => {
             {
                 props.profiles.map(profile => {
                     if(props.currentUser){
-                        if(profile.username !== props.currentUser.username){
+                        if(profile.profile.username !== props.currentUser.username){
                             return (
-                                <Link key={profile.username} to={`/chat/${profile.username}`}>
+                                <Link key={profile.profile.username} to={`/chat/${profile.profile.username}`}>
                                     <div className="card">
                                         <div className="card-body">
                                             <div className="card-title">
-                                                <img src={profile.image} height="30" className="rounded-circle" alt=""/> <b>{profile.username}</b>
+                                                <img src={profile.profile.image} height="30" className="rounded-circle" alt=""/> <b>{profile.profile.username}</b>
+                                            </div>
+                                            <div className="card-text">
+                                                <div className="text-muted"><b>{Math.round(profile.distance)}m</b> from you</div>
                                             </div>
                                         </div>
                                     </div>
@@ -32,11 +35,11 @@ const Profiles = props => {
                         }
                     } else {
                         return (
-                            <Link key={profile.username} to={`/chat/${profile.username}`}>
+                            <Link key={profile.profile.username} to={`/chat/${profile.profile.username}`}>
                                 <div className="card">
                                     <div className="card-body">
                                         <div className="card-title">
-                                            <img src={profile.image} height="30" className="rounded-circle" alt=""/> <b>{profile.username}</b>
+                                            <img src={profile.profile.image} height="30" className="rounded-circle" alt=""/> <b>{profile.username}</b>
                                         </div>
                                     </div>
                                 </div>

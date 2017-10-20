@@ -15,11 +15,18 @@ class Chat extends React.Component{
             message: ''
         };
 
+        this.socket = io('localhost:8000');
+
 
     }
     componentWillMount(){
         console.log('Component mounted, calling profiles');
-        this.props.onLoad(Promise.all([agent.Profiles.all(), agent.GlobalChat.all()]))
+        if("geolocation" in navigator){
+            navigator.geolocation.getCurrentPosition(position => {
+                this.props.onSetPosition(position.coords.latitude, position.coords.longitude);
+                this.props.onLoad(Promise.all([agent.Profiles.all(position.coords.latitude, position.coords.longitude), agent.GlobalChat.all(), agent.Profiles.near(position.coords.latitude, position.coords.longitude)]))
+            })
+        }
     }
 
     componentDidMount(){
@@ -29,8 +36,19 @@ class Chat extends React.Component{
             this.props.onAddMessage(message);
         };
 
+
+
         this.socket.on('JOINED_GLOBAL_CHAT', function(data){
             console.log(data, 'JOINED GLOBAL CHAT')
+        });
+
+        const locationUpdate = profiles => {
+            this.props.onLocationUpdate(profiles)
+        };
+
+
+        this.socket.on('RECEIVE_NEW_USERS', function(data){
+            locationUpdate(data.profiles.profiles);
         });
 
         this.socket.on('RECEIVE_MESSAGE', function(data){
@@ -80,6 +98,28 @@ class Chat extends React.Component{
 
     render(){
         if(this.props.currentUser){
+
+            const socketFunction = () => {
+                this.socket.emit('RECEIVED_LOCATION_UPDATE_ALL', {
+                    user: this.props.currentUser.username
+                })
+            };
+            this.socket.on('RECEIVE_LOCATION_UPDATE', function(){
+                socketFunction()
+            });
+
+            this.socket.emit('JOIN_USER_ROOM', {
+                user: this.props.currentUser.username
+            });
+            if("geolocation" in navigator){
+                navigator.geolocation.watchPosition(position => {
+                    this.socket.emit('LOCATION_UPDATE', {
+                        user: this.props.currentUser.username,
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    });
+                });
+            }
             return (
                 <div className="container my-3">
                     <div className="row">
@@ -112,11 +152,11 @@ class Chat extends React.Component{
                             <div className="card">
                                 <div className="card-body">
                                     <div className="card-title">
-                                        All Users
+                                        Users Near You
                                     </div>
                                 </div>
                                 <div className="card-footer">
-                                    <Profiles currentUser={this.props.currentUser} profiles={this.props.profiles}/>
+                                    <Profiles currentUser={this.props.currentUser} profiles={this.props.nearProfiles}/>
                                 </div>
                             </div>
                         </div>
@@ -141,7 +181,7 @@ class Chat extends React.Component{
                             <div className="card">
                                 <div className="card-body">
                                     <div className="card-title">
-                                        All Users
+                                       Users Near You
                                     </div>
                                 </div>
                                 <div className="card-footer">
@@ -162,11 +202,16 @@ const mapDispatchToProps = dispatch => ({
     onUnload: () =>
         dispatch({type: 'CHAT_PAGE_UNLOADED'}),
     onAddMessage: message =>
-        dispatch({type: 'ADD_MESSAGE', message})
+        dispatch({type: 'ADD_MESSAGE', message}),
+    onLocationUpdate: profiles =>
+        dispatch({type: 'LOCATION_UPDATE', profiles}),
+    onSetPosition: (lat, lng) =>
+        dispatch({type: 'SET_POSITION', payload: agent.User.update({geometry:{type: 'point', coordinates: [lat, lng]}})})
 });
 
 const mapStateToProps = state => ({
     profiles: state.common.profiles,
+    nearProfiles: state.common.nearProfiles,
     currentUser: state.common.currentUser,
     messages: state.chat.messages
 });
