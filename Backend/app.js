@@ -259,7 +259,7 @@ io.on('connection', function(socket){
             }
 
             user.geometry = {
-                type: "<GeoJSON type>",
+                type: 'Point',
                 coordinates: [
                     parseFloat(data.lat),
                     parseFloat(data.lng)
