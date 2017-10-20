@@ -261,8 +261,8 @@ io.on('connection', function(socket){
             user.geometry = {
                 type: "<GeoJSON type>",
                 coordinates: [
-                    data.lat,
-                    data.lng
+                    parseFloat(data.lat),
+                    parseFloat(data.lng)
                 ]
             };
             return user.save().then(function () {
@@ -275,14 +275,15 @@ io.on('connection', function(socket){
     socket.on('RECEIVED_LOCATION_UPDATE_ALL', function(data){
         User.findOne({username: data.user}).then(function(user){
             User.geoNear(
-                {type: "<GeoJSON type>", coordinates:[user.geometry.coordinates[0], user.geometry.coordinates[1]]},
-                {maxDistance: 1000, spherical: true}
+                {type: "Point", coordinates:[user.geometry.coordinates[0], user.geometry.coordinates[1]]},
+                {maxDistance: 10000, spherical: true}
             ).then(function(users){
                 const profiles = {
                     profiles: users.map(function(user){
                         return {profile: user.obj.toProfileJSONFor(), distance: user.dis}
                     })
                 };
+                console.log('UPDATEEEEEEEEEEEEEEEEEEEEEEEES',users);
 
                 io.in(data.user).emit('RECEIVE_NEW_USERS', {
                     profiles: profiles

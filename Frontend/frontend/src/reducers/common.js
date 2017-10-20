@@ -30,8 +30,8 @@ export default (state={profiles: null}, action) => {
         case 'CHAT_PAGE_LOADED':
             return {
                 ...state,
-                profiles: action.payload[0] ? action.paylad[0].profiles : [],
-                nearProfiles: action.payload[2] ? action.paylod[2].profiles : []
+                profiles: action.payload[0] ? action.payload[0].profiles : [],
+                nearProfiles: action.payload[2] ? action.payload[2].profiles : []
             };
         case 'LOCATION_UPDATE':
             return {

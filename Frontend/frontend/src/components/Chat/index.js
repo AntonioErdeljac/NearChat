@@ -96,8 +96,19 @@ class Chat extends React.Component{
     }
 
 
+
+
     render(){
         if(this.props.currentUser){
+
+            const success = position => {
+                const socket = io('localhost:8000');
+                socket.emit('LOCATION_UPDATE', {
+                    user: this.props.currentUser.username,
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                });
+            };
 
             const socketFunction = () => {
                 this.socket.emit('RECEIVED_LOCATION_UPDATE_ALL', {
@@ -112,12 +123,10 @@ class Chat extends React.Component{
                 user: this.props.currentUser.username
             });
             if("geolocation" in navigator){
-                navigator.geolocation.watchPosition(position => {
-                    this.socket.emit('LOCATION_UPDATE', {
-                        user: this.props.currentUser.username,
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude
-                    });
+                navigator.geolocation.watchPosition(success, null, {
+                    enableHighAccuracy: true,
+                    timeout: 5000,
+                    maximumAge: 0
                 });
             }
             return (
