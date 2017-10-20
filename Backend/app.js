@@ -26,7 +26,7 @@ app.use(bodyParser.json());
 app.use(require('method-override')());
 app.use(express.static(__dirname + '/public'));
 
-app.use(session({ secret: 'conduit', cookie: { maxAge: 60000 }, resave: false, saveUninitialized: false  }));
+app.use(session({ secret: 'nearchat', cookie: { maxAge: 60000 }, resave: false, saveUninitialized: false  }));
 
 if (!isProduction) {
   app.use(errorhandler());
@@ -98,11 +98,9 @@ var server = app.listen( process.env.PORT || 8000, function(){
 var io = socket(server);
 
 io.on('connection', function(socket){
-  console.log(socket.id);
 
 
     socket.on('SEND_MESSAGE', function(data){
-      console.log('server je primio poruku');
       User.findOne({username: data.author}).then(function(user){
         if(!user){return res.sendStatus(401);}
 
@@ -153,12 +151,10 @@ io.on('connection', function(socket){
     });
 
     socket.on('JOIN_PRIVATE_CHAT', function(data){
-      console.log('JOINED PRIVATE CHAT', data.yourRoom);
       socket.join(data.yourRoom);
     });
 
     socket.on('SEND_PRIVATE_MESSAGE', function(data){
-        console.log('SENDED PRIVATEM ESSAGE TO SEERverS', data);
       User.findOne({username: data.author}).then(function(user){
           User.findOne({username: data.receiver}).then(function(receiver){
               PrivateChat.findOne({roomName: data.yourRoom}).then(function(chat){
@@ -235,7 +231,6 @@ io.on('connection', function(socket){
 
 
           const profileUser = user.toProfileJSONFor();
-          console.log(profileUser, 'IM HERE')
           io.in(data.yourRoom).emit('RECEIVE_PRIVATE_MESSAGE', {
               author: profileUser,
               message: data.message
@@ -283,7 +278,6 @@ io.on('connection', function(socket){
                         return {profile: user.obj.toProfileJSONFor(), distance: user.dis}
                     })
                 };
-                console.log('UPDATEEEEEEEEEEEEEEEEEEEEEEEES',users);
 
                 io.in(data.user).emit('RECEIVE_NEW_USERS', {
                     profiles: profiles

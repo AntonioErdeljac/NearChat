@@ -37,7 +37,7 @@ class Login extends React.Component{
                                     <input
                                         onChange={this.changePassword}
                                         value={password}
-                                        placeholder="Password" type="text" className="form-control"/>
+                                        placeholder="Password" type="password" className="form-control"/>
                                 </fieldset>
                                 <fieldset className="form-group">
                                     <button

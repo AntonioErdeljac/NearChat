@@ -20,7 +20,6 @@ class Chat extends React.Component{
 
     }
     componentWillMount(){
-        console.log('Component mounted, calling profiles');
         if("geolocation" in navigator){
             navigator.geolocation.getCurrentPosition(position => {
                 this.props.onSetPosition(position.coords.latitude, position.coords.longitude);
@@ -39,7 +38,6 @@ class Chat extends React.Component{
 
 
         this.socket.on('JOINED_GLOBAL_CHAT', function(data){
-            console.log(data, 'JOINED GLOBAL CHAT')
         });
 
         const locationUpdate = profiles => {
@@ -55,7 +53,6 @@ class Chat extends React.Component{
 
             let typing = document.getElementById('typing');
             typing.innerHTML = '';
-            console.log('RECEIVED MESSAGE');
             addMessage(data);
         });
 
@@ -71,8 +68,6 @@ class Chat extends React.Component{
 
 
         this.sendMessage = ev => {
-
-            console.log('SALJEM PORUKU');
             ev.preventDefault();
 
             this.socket.emit('SEND_MESSAGE', {
@@ -99,11 +94,9 @@ class Chat extends React.Component{
 
 
     render(){
-        console.log('this has rerendered');
         if(this.props.currentUser){
 
             const success = position => {
-                console.log('You have moved');
                 this.socket.emit('LOCATION_UPDATE', {
                     user: this.props.currentUser.username,
                     lat: position.coords.latitude,
@@ -185,18 +178,6 @@ class Chat extends React.Component{
                                 </div>
                                 <div className="card-footer">
                                     <p><Link to="/login">Login</Link> or <Link to="/register">Sign Up</Link> to leave a message.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-md-4 col-xs-12">
-                            <div className="card">
-                                <div className="card-body">
-                                    <div className="card-title">
-                                       Users Near You
-                                    </div>
-                                </div>
-                                <div className="card-footer">
-                                    <Profiles currentUser={this.props.currentUser} profiles={this.props.profiles}/>
                                 </div>
                             </div>
                         </div>

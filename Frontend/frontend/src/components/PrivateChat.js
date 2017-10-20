@@ -18,7 +18,6 @@ class PrivateChat extends React.Component{
 
     }
     componentWillMount(){
-        console.log(this.props.currentUser, ' CURRENTUSER');
         this.props.onLoad(agent.Profiles.get(this.props.match.params.username));
         this.props.onLoadMessages();
     }
@@ -31,7 +30,6 @@ class PrivateChat extends React.Component{
         };
 
         this.socket.on('RECEIVE_PRIVATE_MESSAGE', function(data){
-            console.log('DOBIO SAM PORUKU', data);
             let typing = document.getElementById('typing');
             typing.innerHTML = '';
             addMessage(data);
@@ -75,7 +73,6 @@ class PrivateChat extends React.Component{
 
     render(){
         if(this.props.profile && this.props.currentUser){
-            console.log(this.props.chatLoaded, 'IS CHAT LOADED?');
             if(!this.props.chatLoaded){
                 this.socket.emit('JOIN_PRIVATE_CHAT', {
                     yourRoom: this.props.currentUser.username +'_and_'+this.props.match.params.username,
